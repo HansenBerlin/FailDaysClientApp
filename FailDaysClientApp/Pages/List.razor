@@ -18,23 +18,76 @@
     <DataGridColumn TItem="Student" Field="@nameof(Student.LastName)" Caption="Last Name" Editable="true" />
     <DataGridColumn TItem="Student" Field="@nameof(Student.CourseId)" Caption="Course" Editable="true" />
 </DataGrid>
+<Select TValue="string" Style="@($"width: 300px;")">
+    <SelectItem Value="1.0">1.0</SelectItem>
+    <SelectItem Value="1.3">1.3</SelectItem>
+    
+    <SelectItem Value="1.7">1.7</SelectItem>
+    <SelectItem Value="2.0">2.0</SelectItem>
+    <SelectItem Value="2.3">2.3</SelectItem>
+    
+    <SelectItem Value="2.7">2.7</SelectItem>
+    <SelectItem Value="3.0">3.0</SelectItem>
+    <SelectItem Value="3.3">3.3</SelectItem>
+    
+    <SelectItem Value="3.7">3.7</SelectItem>
+<SelectItem Value="4.0">4.0</SelectItem>
+</Select>
+
+
+
+
 
 <ListGroup>
     <ListGroupItem>@selectedStudent.FirstName</ListGroupItem>
     <ListGroupItem>@selectedStudent.LastName</ListGroupItem>
+</ListGroup>
+<ListGroup>
+    @if (gradeCatageories != null)
+    {
+        foreach (GradeCategory category in gradeCatageories)
+        {
+            <ListGroupItem>
+                @category.Type
+                    <Select TValue="double" Style="@($"width: 300px;")">
+                        <SelectGroup Label="SEHR GUT">
+                            <SelectItem Value="1.0">1.0</SelectItem>
+                            <SelectItem Value="1.3">1.3</SelectItem>
+                        </SelectGroup>
+                        <SelectGroup Label="GUT">
+                            <SelectItem Value="1.7">1.7</SelectItem>
+                            <SelectItem Value="2.0">2.0</SelectItem>
+                            <SelectItem Value="2.3">2.3</SelectItem>
+                        </SelectGroup>
+                        <SelectGroup Label="BEFRIEDIGEND">
+                            <SelectItem Value="2.7">2.7</SelectItem>
+                            <SelectItem Value="3.0">3.0</SelectItem>
+                            <SelectItem Value="3.3">3.3</SelectItem>
+                        </SelectGroup>
+                        <SelectGroup Label="AUSREICHEND">
+                            <SelectItem Value="3.7">3.7</SelectItem>
+                            <SelectItem Value="4.0">4.0</SelectItem>
+                        </SelectGroup>
+                    </Select>
+                    <Button>ADD</Button>
+            </ListGroupItem>
+        }
+    }
     
 </ListGroup>
-
 @code
 {
     Student selectedStudent = new Student(){FirstName = "", LastName = ""};
     Student[] students;
+    GradeCategory[] gradeCatageories;
     int totalStudents;
 
     async Task OnReadData( DataGridReadDataEventArgs<Student> e )
     {
         HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/student");
         students = await response.Content.ReadFromJsonAsync<Student[]>();
+        HttpResponseMessage responseGrades = await httpClient.GetAsync("https://localhost:5001/api/gradeCategory");
+        gradeCatageories = await responseGrades.Content.ReadFromJsonAsync<GradeCategory[]>();
         StateHasChanged();
     }
 }
