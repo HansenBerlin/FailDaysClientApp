@@ -1,0 +1,40 @@
+﻿@page "/List"
+@using FailDaysClientApp.Models
+@using System.Net.Http.Json
+@inject HttpClient httpClient
+
+<DataGrid TItem="Student"
+          Data="@students"
+          ReadData="@OnReadData"
+          TotalItems="@totalStudents"
+          EditMode="DataGridEditMode.Inline"
+          @bind-SelectedRow="@selectedStudent">
+    <DataGridCommandColumn 
+        TItem="Student" 
+        Editable="true"
+        CellsEditableOnEditCommand="true"/>
+    <DataGridColumn TItem="Student" Field="@nameof(Student.MatNr)" Caption="Mat.nr." Sortable="false" />
+    <DataGridColumn TItem="Student" Field="@nameof(Student.FirstName)" Caption="First Name" Editable="true" />
+    <DataGridColumn TItem="Student" Field="@nameof(Student.LastName)" Caption="Last Name" Editable="true" />
+    <DataGridColumn TItem="Student" Field="@nameof(Student.CourseId)" Caption="Course" Editable="true" />
+</DataGrid>
+
+<ListGroup>
+    <ListGroupItem>@selectedStudent.FirstName</ListGroupItem>
+    <ListGroupItem>@selectedStudent.LastName</ListGroupItem>
+    
+</ListGroup>
+
+@code
+{
+    Student selectedStudent = new Student(){FirstName = "", LastName = ""};
+    Student[] students;
+    int totalStudents;
+
+    async Task OnReadData( DataGridReadDataEventArgs<Student> e )
+    {
+        HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/student");
+        students = await response.Content.ReadFromJsonAsync<Student[]>();
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,77 @@
+﻿@page "/AddStudent"
+@using FailDaysClientApp.Models
+@using System.Net.Http.Json
+@inject HttpClient httpClient
+
+<Container Fluid="true">
+    <Select TValue="int" Width="Width.Is25" @bind-SelectedValue="@selectedValue">
+        @foreach (Course course in dropdownContent)
+        {
+            <SelectItem Value="course.Id">@course.CourseName</SelectItem>
+        }
+    </Select>
+    <Fields>
+            <Field ColumnSize="ColumnSize.Is6.OnDesktop">
+                <FieldLabel>Vorname</FieldLabel>
+                <TextEdit @ref="firstName"/>
+            </Field>
+            <Field ColumnSize="ColumnSize.Is4.OnDesktop">
+                <FieldLabel>Nachname</FieldLabel>
+                <TextEdit @ref="lastName"/>
+            </Field>
+            <Field ColumnSize="ColumnSize.Is2.OnDesktop">
+                <FieldLabel>MatNr</FieldLabel>
+                <TextEdit @ref="matNr"/>
+            </Field>
+        </Fields>
+        <Button Clicked="@ButtonOnClick">ADD</Button>
+</Container>
+
+@code 
+{
+    int selectedValue;
+
+    private Course[] dropdownContent { get; set; } = new[] {new Course() {Id = 2, CourseName = "Test"}};
+
+    Dropdown dropdown;
+    TextEdit firstName;
+    TextEdit lastName;
+    TextEdit matNr;
+
+    async Task ButtonOnClick()
+    {
+
+        
+    //var response = await httpClient.GetAsync("https://localhost:5001/api/grade/1");
+    //ButtonText = response.Content.ReadAsStringAsync().Result;
+        var student = new Student()
+        {
+            FirstName = firstName.Text,
+            LastName = lastName.Text,
+            MatNr = int.Parse(matNr.Text),
+            CourseId = selectedValue
+        };
+        var response = await httpClient.PostAsJsonAsync("https://localhost:5001/api/student", student);
+
+    //HttpContent test = new StringContent(jsonBody);
+    //var response = await httpClient.PostAsync(new Uri("https://localhost:5001/api/student"), test);
+    }
+    
+    void SomeStartupMethod()
+    {
+        
+    }
+
+    async Task SomeStartupTask()
+    {
+        HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/course");
+        dropdownContent = await response.Content.ReadFromJsonAsync<Course[]>();
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        SomeStartupMethod();
+        await SomeStartupTask();
+    }
+}
