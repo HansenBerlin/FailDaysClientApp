@@ -4,10 +4,10 @@
 @inject HttpClient httpClient
 
 <Container Fluid="true">
-    <Select TValue="int" Width="Width.Is25" @bind-SelectedValue="@selectedValue">
+    <Select TValue="string" Width="Width.Is25" @bind-SelectedValue="@selectedValue">
         @foreach (Course course in dropdownContent)
         {
-            <SelectItem Value="course.Id">@course.CourseName</SelectItem>
+            <SelectItem Value="course.CourseName">@course.CourseName</SelectItem>
         }
     </Select>
     <Fields>
@@ -29,9 +29,9 @@
 
 @code 
 {
-    int selectedValue;
+    string selectedValue;
 
-    private Course[] dropdownContent { get; set; } = new[] {new Course() {Id = 2, CourseName = "Test"}};
+    private Course[] dropdownContent { get; set; } = new[] {new Course() {CourseName = ""}};
 
     Dropdown dropdown;
     TextEdit firstName;
@@ -40,10 +40,6 @@
 
     async Task ButtonOnClick()
     {
-
-        
-    //var response = await httpClient.GetAsync("https://localhost:5001/api/grade/1");
-    //ButtonText = response.Content.ReadAsStringAsync().Result;
         var student = new Student()
         {
             FirstName = firstName.Text,
@@ -51,10 +47,8 @@
             MatNr = int.Parse(matNr.Text),
             CourseId = selectedValue
         };
-        var response = await httpClient.PostAsJsonAsync("https://localhost:5001/api/student", student);
-
-    //HttpContent test = new StringContent(jsonBody);
-    //var response = await httpClient.PostAsync(new Uri("https://localhost:5001/api/student"), test);
+        await httpClient.PostAsJsonAsync("https://localhost:5001/api/student", student);
+        await httpClient.PostAsJsonAsync("https://localhost:5001/api/grade", student);
     }
     
     void SomeStartupMethod()

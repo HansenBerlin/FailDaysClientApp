@@ -2,23 +2,28 @@
 
 namespace FailDaysClientApp.Models
 {
-    public class Student
+    public class Grade
     {
-        public string CourseId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        private double number;
+        private string category;
+        public int Id { get; set; }
+        public int StudentId { get; set; }
 
-        private int matNr;
+
+        public double Number { get; set; }
         
-        public int MatNr
+        
+        public string Category
         {
-            get => matNr;
+            get => category;
             set
             {
-                matNr = value;
-                OnPropertyChanged("MatNr");
+                category = value;
+                OnPropertyChanged("Category");
             }
         }
+        
+        
 
         public event PropertyChangedEventHandler PropertyChanged;
 
