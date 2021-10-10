@@ -3,29 +3,48 @@
 @using System.Net.Http.Json
 @inject HttpClient httpClient
 
-<Container Fluid="true">
-    <Select TValue="string" Width="Width.Is25" @bind-SelectedValue="@selectedValue">
-        @foreach (Course course in dropdownContent)
-        {
-            <SelectItem Value="course.CourseName">@course.CourseName</SelectItem>
-        }
-    </Select>
-    <Fields>
-            <Field ColumnSize="ColumnSize.Is6.OnDesktop">
-                <FieldLabel>Vorname</FieldLabel>
+<Container>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is4">
+            <Select TValue="string" @bind-SelectedValue="@selectedValue">
+                @foreach (Course course in dropdownContent)
+                {
+                    <SelectItem Value="course.CourseName">@course.CourseName</SelectItem>
+                }
+            </Select>
+        </Column>
+    </Row>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is4">
+            <Field>
+                <FieldHelp>Vorname</FieldHelp>
                 <TextEdit @ref="firstName"/>
             </Field>
-            <Field ColumnSize="ColumnSize.Is4.OnDesktop">
-                <FieldLabel>Nachname</FieldLabel>
+        </Column>
+    </Row>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is4">
+            <Field>
+                <FieldHelp>Nachname</FieldHelp>
                 <TextEdit @ref="lastName"/>
             </Field>
-            <Field ColumnSize="ColumnSize.Is2.OnDesktop">
-                <FieldLabel>MatNr</FieldLabel>
+        </Column>
+    </Row>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is4">
+            <Field>
+                <FieldHelp>Matrikelnummer</FieldHelp>
                 <TextEdit @ref="matNr"/>
             </Field>
-        </Fields>
-        <Button Clicked="@ButtonOnClick">ADD</Button>
+        </Column>
+    </Row>
+    <Row>
+        <Column ColumnSize="ColumnSize.Is4">
+            <Button Color="Color.Dark" Clicked="@ButtonOnClick">ADD</Button>
+        </Column>
+    </Row>
 </Container>
+
 
 @code 
 {

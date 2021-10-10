@@ -1,0 +1,37 @@
+﻿@using System.Threading
+@using System.Timers
+<Badge Color=@BadgeColor Visibility=@Visible>@BadgeCaption</Badge>
+
+@code{
+
+    private Color BadgeColor { get; set; } = Color.Dark;
+    private Visibility Visible { get; set; } = Visibility.Invisible;
+    private string BadgeCaption { get; set; } = "";
+
+    public async Task Success(string message)
+    {
+        BadgeColor = Color.Success;
+        BadgeCaption = message;
+        Visible = Visibility.Visible;
+        StateHasChanged();
+        await Task.Delay(2000);
+        Visible = Visibility.Invisible;
+        StateHasChanged();
+    }
+    
+    public async Task Fail(string message)
+    {
+        BadgeColor = Color.Danger;
+        BadgeCaption = message;
+        Visible = Visibility.Visible;
+        StateHasChanged();
+        await Task.Delay(5000);
+        Visible = Visibility.Invisible;
+        StateHasChanged();
+    }
+    
+    
+    
+   
+
+}

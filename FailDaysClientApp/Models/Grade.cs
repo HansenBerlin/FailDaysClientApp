@@ -10,7 +10,8 @@ namespace FailDaysClientApp.Models
         public int StudentId { get; set; }
 
 
-        public double Number { get; set; }
+        public decimal Number { get; set; } = 0m;
+        //public double GradeDouble { get; set; }
         
         
         public string Category

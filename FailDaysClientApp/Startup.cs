@@ -15,6 +15,7 @@ using System.Net.Http;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using FailDaysClientApp.Controller;
 
 namespace FailDaysClientApp
 {
@@ -27,8 +28,6 @@ namespace FailDaysClientApp
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services
@@ -41,10 +40,8 @@ namespace FailDaysClientApp
             
             if (!services.Any(x => x.ServiceType == typeof(HttpClient)))
             {
-                // Setup HttpClient for server side in a client side compatible fashion
                 services.AddScoped<HttpClient>(s =>
                 {
-                    // Creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.      
                     var uriHelper = s.GetRequiredService<NavigationManager>();
                     return new HttpClient
                     {
@@ -63,12 +60,11 @@ namespace FailDaysClientApp
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<HttpResponseController>();
 
            
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
