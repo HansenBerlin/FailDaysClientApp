@@ -61,6 +61,7 @@ namespace FailDaysClientApp
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddSingleton<HttpResponseController>();
+            services.AddSingleton<GradeCalculationController>();
 
            
         }

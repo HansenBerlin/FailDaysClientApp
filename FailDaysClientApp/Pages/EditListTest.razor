@@ -1,0 +1,64 @@
+﻿@page "/Test"
+@using FailDaysClientApp.Models
+
+<DataGrid TItem="Student"
+          Data="@students"
+          TotalItems="@totalEmployees"
+          Editable="true"
+          @bind-SelectedRow="@selectedStudent"
+          DetailRowTrigger="@((item)=>item.MatNr == selectedStudent?.MatNr)">
+    <DetailRowTemplate>
+        <Jumbotron Background="Background.Primary">
+                        <JumbotronTitle Size="JumbotronTitleSize.Is4">@selectedStudent.FirstName</JumbotronTitle>
+                        <JumbotronSubtitle>
+                            @selectedStudent.FirstName @selectedStudent.LastName (Matrikelnummer: @selectedStudent.MatNr)
+                        </JumbotronSubtitle>
+                        <Divider></Divider>
+                        <Paragraph>
+                            Durchschnittsnote: 2
+                        </Paragraph>
+                        <Paragraph>
+                            Projektthema: Leistungstracker (Link Projektübersicht)
+                        </Paragraph>
+                    </Jumbotron>
+    </DetailRowTemplate>
+    <DataGridColumns>
+        <DataGridColumn TItem="Student" Field="@nameof(Student.MatNr)" Caption="Matrikelnummer"/>
+        <DataGridColumn TItem="Student" Field="@nameof(Student.FirstName)" Caption="Vorname" Editable="true"/>
+        <DataGridColumn TItem="Student" Field="@nameof(Student.LastName)" Caption="Nachname" Editable="true"/>
+        <DataGridColumn TItem="Student" Field="@nameof(Student.AverageGrade)" Caption="Durchschnittsnote" Editable="true">
+            <DisplayTemplate>
+                @($"{context?.AverageGrade}")
+            </DisplayTemplate>
+            <EditTemplate>
+                <NumericEdit TValue="decimal" Value="@((decimal) (((CellEditContext) context).CellValue))" ValueChanged="@(v => ((CellEditContext) context).CellValue = v)"/>
+            </EditTemplate>
+        </DataGridColumn>
+
+        <DataGridSelectColumn TItem="Student" Field="@nameof(Student.CourseId)" Caption="Kursname" Editable="true">
+            <DisplayTemplate>
+                @($"{context.CourseId}")
+            </DisplayTemplate>
+            <EditTemplate>
+                <EditComponent TValue="string" SelectedValue="@((string) (((CellEditContext) context)?.CellValue))"
+                               SelectedValueChanged="@((v) => context.CellValue = v)"/>
+            </EditTemplate>
+        </DataGridSelectColumn>
+    </DataGridColumns>
+</DataGrid>
+
+
+
+@code {
+
+    private Student selectedStudent = new Student() {MatNr = 1, FirstName = "", LastName = "", AverageGrade = 1.0M, CourseId = ""};
+    private List<Student> students = new()
+    {
+        new Student() {MatNr = 1, FirstName = "Nancy", LastName = "Davolio", AverageGrade = 1.0M, CourseId = "Kurs C"},
+        new Student() {MatNr = 2, FirstName = "Hannes", LastName = "Roever", AverageGrade = 2.0M, CourseId = "Kurs C"},
+        new Student() {MatNr = 3, FirstName = "Robert", LastName = "Neubert", AverageGrade = 3.0M, CourseId = "Kurs C"},
+
+    };
+    private int totalEmployees = 3;
+    
+ }

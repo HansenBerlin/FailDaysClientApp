@@ -1,0 +1,20 @@
+﻿  @typeparam TValue
+    
+    <Select SelectedValue="SelectedValue" SelectedValueChanged="SelectedValueChanged">
+           <SelectItem TValue="string" Value="null">Select...</SelectItem>
+            @foreach (var course in CourseId)
+             {
+                 <SelectItem TValue="string" Value="@course">@course</SelectItem>
+             }
+    </Select>
+    
+    
+    @code {
+        public List<string> CourseId {get;set;} = new List<string> {"Kurs A", "Kurs B", "Kurs C"};
+    
+        [Parameter]
+        public TValue SelectedValue { get; set; }
+
+        [Parameter]
+        public EventCallback<TValue> SelectedValueChanged { get; set; }
+    }

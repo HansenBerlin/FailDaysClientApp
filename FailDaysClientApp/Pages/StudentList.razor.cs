@@ -17,13 +17,14 @@ namespace FailDaysClientApp.Pages
     {
         Student selectedStudent = new(){FirstName = "", LastName = ""};
         Student[] students;
-        List<Grade> gradeCategegories = new();
+        List<Grade> currentStudentGrades = new();
         int totalStudents;
         Select<double> selectRef;
         List<CustomBadge> badges = new();
         List<Row> rows = new();
         [Inject] private HttpClient httpClient { get; set; }
         [Inject] private HttpResponseController httpMessageConverter { get; set; }
+        [Inject] private GradeCalculationController gradeCalculator { get; set; }
     
         async Task OnReadData(DataGridReadDataEventArgs<Student> e)
         {
@@ -31,13 +32,31 @@ namespace FailDaysClientApp.Pages
             students = await response.Content.ReadFromJsonAsync<Student[]>();
             StateHasChanged();
         }
+
+        async Task Start()
+        {
+            HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/student");
+            students = await response.Content.ReadFromJsonAsync<Student[]>();
+            StateHasChanged();
+            
+        }
+        
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if(firstRender)
+            {
+                Start();
+            }
+        }
     
         async Task OnSelectedValueChanged(int index, decimal value)
         {
-            gradeCategegories[index].Number = Convert(value);
-            var uri = $"https://localhost:5001/api/grade/{gradeCategegories[index].Id}";
-            HttpResponseMessage responseGrades = await httpClient.PutAsJsonAsync(uri, gradeCategegories[index]);
+            currentStudentGrades[index].Number = Convert(value);
+            var uri = $"https://localhost:5001/api/grade/{currentStudentGrades[index].Id}";
+            HttpResponseMessage responseGrades = await httpClient.PutAsJsonAsync(uri, currentStudentGrades[index]);
+            selectedStudent.AverageGrade = gradeCalculator.CalculateAverageGrade(currentStudentGrades);
             ShowBadgeAccordingToHttpResponse(responseGrades.StatusCode, index);
+            StateHasChanged();
         }
     
         private async Task ShowBadgeAccordingToHttpResponse(HttpStatusCode statusCode, int index)
@@ -47,7 +66,7 @@ namespace FailDaysClientApp.Pages
                 await badges[index].Success(message);
             else
                 await badges[index].Fail(message);
-            StateHasChanged();
+            //StateHasChanged();
         }
     
         private void CreateLists()
@@ -55,7 +74,7 @@ namespace FailDaysClientApp.Pages
             rows.Clear();
             badges.Clear();
             
-            foreach (var grade in gradeCategegories)
+            foreach (var grade in currentStudentGrades)
             {
                 rows.Add(new Row());
                 CustomBadge badge = new CustomBadge();
@@ -74,10 +93,11 @@ namespace FailDaysClientApp.Pages
         {
             selectedStudent = student;
             HttpResponseMessage responseGrades = await httpClient.GetAsync($"https://localhost:5001/api/grade/{student.MatNr}");
-            var test = await responseGrades.Content.ReadFromJsonAsync<Grade[]>();
-            gradeCategegories = test.ToList();
+            var grades = await responseGrades.Content.ReadFromJsonAsync<Grade[]>();
+            currentStudentGrades = grades.ToList();
+            selectedStudent.AverageGrade = gradeCalculator.CalculateAverageGrade(currentStudentGrades);
             CreateLists();
-            StateHasChanged();
+            //StateHasChanged();
         }
     }
 }

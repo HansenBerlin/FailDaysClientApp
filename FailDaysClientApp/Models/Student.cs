@@ -7,7 +7,8 @@ namespace FailDaysClientApp.Models
         public string CourseId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-
+        public decimal AverageGrade { get; set; }
+        
         private int matNr;
         
         public int MatNr
