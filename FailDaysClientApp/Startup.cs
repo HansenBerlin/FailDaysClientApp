@@ -13,9 +13,13 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using Blazorise;
+using Blazorise.AntDesign;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using Blazorise.Icons.Material;
+using Blazorise.Material;
 using FailDaysClientApp.Controller;
+using FailDaysClientApp.Shared;
 
 namespace FailDaysClientApp
 {
@@ -35,8 +39,8 @@ namespace FailDaysClientApp
                 {
                     options.ChangeTextOnKeyPress = true;
                 })
-                .AddBootstrapProviders()
-                .AddFontAwesomeIcons();
+                .AddMaterialProviders()
+                .AddMaterialIcons();
             
             if (!services.Any(x => x.ServiceType == typeof(HttpClient)))
             {

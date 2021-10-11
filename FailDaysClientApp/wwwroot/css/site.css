@@ -1,7 +1,20 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Roboto Light';
+    
+}
+
+.nextbutton:focus
+{
+    display: inline-block;
+    border: none;
+    width: 52px;
+    height: 64px;
+    background-color: transparent;
+    transform: scale(0.75);
+    transform-origin: left;
+    outline: none;
 }
 
 a, .btn-link {
@@ -12,6 +25,7 @@ a, .btn-link {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
+    border-width: 0px;
 }
 
 .content {

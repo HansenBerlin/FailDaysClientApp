@@ -7,16 +7,24 @@
 
   <ItemGroup>
     <PackageReference Include="Blazorise" Version="0.9.4.6" />
+    <PackageReference Include="Blazorise.AntDesign" Version="0.9.4.6" />
     <PackageReference Include="Blazorise.Bootstrap" Version="0.9.4.6" />
     <PackageReference Include="Blazorise.Components" Version="0.9.4.6" />
     <PackageReference Include="Blazorise.DataGrid" Version="0.9.4.6" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.4.6" />
+    <PackageReference Include="Blazorise.Icons.Material" Version="0.9.4.6" />
+    <PackageReference Include="Blazorise.Material" Version="0.9.4.6" />
     <PackageReference Include="Blazorise.Sidebar" Version="0.9.4.6" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map" />
   </ItemGroup>
 
 </Project>

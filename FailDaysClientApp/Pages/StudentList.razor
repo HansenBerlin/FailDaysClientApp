@@ -29,73 +29,70 @@
                     </Jumbotron>
                 </Column>
                 <Column ColumnSize="ColumnSize.Is8">
-                    <Tabs SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
-                        <Items>
-                            <Tab Name="home">Projekte</Tab>
-                            <Tab Name="grades">Noten</Tab>
-                            <Tab Name="messages">Gruppen</Tab>
-                            <Tab Name="settings">Aktive MA</Tab>
-                        </Items>
-                        <Content>
-                            <TabPanel Name="home">
-                                Content for home.
-                            </TabPanel>
-                            <TabPanel Name="grades">
-                                @if (currentStudentGrades != null)
+                    <nav>
+                      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Home</a>
+                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</a>
+                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</a>
+                      </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            @if (currentStudentGrades != null)
+                            {
+                                foreach (Grade grade in currentStudentGrades)
                                 {
-                                    foreach (Grade grade in currentStudentGrades)
-                                    {
-                                        <Row @ref="rows[currentStudentGrades.IndexOf(grade)]" Margin="Margin.Is1.FromBottom">
-                                            <Column ColumnSize="ColumnSize.Is3">
-                                                @grade.Category
-                                            </Column>
-                                            <Column ColumnSize="ColumnSize.Is3">
-                                                <Select TValue="decimal"
-                                                        SelectedValue="@grade.Number"
-                                                        SelectedValueChanged="delegate(decimal d) { OnSelectedValueChanged(currentStudentGrades.IndexOf(grade), d); }"
-                                                        DecimalsSeparator="."
-                                                        Culture="en">
-                                                    <SelectGroup Label="OHNE BEWERTUNG">
-                                                        <SelectItem Value="0.0">0.0</SelectItem>
-                                                    </SelectGroup>
-                                                    <SelectGroup Label="SEHR GUT">
-                                                        <SelectItem Value="1.0">1.0</SelectItem>
-                                                        <SelectItem Value="1.3">1.3</SelectItem>
-                                                    </SelectGroup>
-                                                    <SelectGroup Label="GUT">
-                                                        <SelectItem Value="1.7">1.7</SelectItem>
-                                                        <SelectItem Value="2.0">2.0</SelectItem>
-                                                        <SelectItem Value="2.3">2.3</SelectItem>
-                                                    </SelectGroup>
-                                                    <SelectGroup Label="BEFRIEDIGEND">
-                                                        <SelectItem Value="2.7">2.7</SelectItem>
-                                                        <SelectItem Value="3.0">3.0</SelectItem>
-                                                        <SelectItem Value="3.3">3.3</SelectItem>
-                                                    </SelectGroup>
-                                                    <SelectGroup Label="AUSREICHEND">
-                                                        <SelectItem Value="3.7">3.7</SelectItem>
-                                                        <SelectItem Value="4.0">4.0</SelectItem>
-                                                    </SelectGroup>
-                                                    <SelectGroup Label="NICHT BESTANDEN">
-                                                        <SelectItem Value="5.0">5.0</SelectItem>
-                                                    </SelectGroup>
-                                                </Select>
-                                            </Column>
-                                            <Column ColumnSize="ColumnSize.Is3">
-                                                <CustomBadge @ref="@badges[currentStudentGrades.IndexOf(grade)]"/>
-                                            </Column>
-                                        </Row>
-                                    }
+                                    <Row @ref="rows[currentStudentGrades.IndexOf(grade)]" Margin="Margin.Is1.FromBottom">
+                                        <Column ColumnSize="ColumnSize.Is3">
+                                            @grade.Category
+                                        </Column>
+                                        <Column ColumnSize="ColumnSize.Is3">
+                                            <Select TValue="decimal"
+                                                    SelectedValue="@grade.Number"
+                                                    SelectedValueChanged="delegate(decimal d) { OnSelectedValueChanged(currentStudentGrades.IndexOf(grade), d); }"
+                                                    DecimalsSeparator="."
+                                                    Culture="en">
+                                                <SelectGroup Label="OHNE BEWERTUNG">
+                                                    <SelectItem Value="0.0">0.0</SelectItem>
+                                                </SelectGroup>
+                                                <SelectGroup Label="SEHR GUT">
+                                                    <SelectItem Value="1.0">1.0</SelectItem>
+                                                    <SelectItem Value="1.3">1.3</SelectItem>
+                                                </SelectGroup>
+                                                <SelectGroup Label="GUT">
+                                                    <SelectItem Value="1.7">1.7</SelectItem>
+                                                    <SelectItem Value="2.0">2.0</SelectItem>
+                                                    <SelectItem Value="2.3">2.3</SelectItem>
+                                                </SelectGroup>
+                                                <SelectGroup Label="BEFRIEDIGEND">
+                                                    <SelectItem Value="2.7">2.7</SelectItem>
+                                                    <SelectItem Value="3.0">3.0</SelectItem>
+                                                    <SelectItem Value="3.3">3.3</SelectItem>
+                                                </SelectGroup>
+                                                <SelectGroup Label="AUSREICHEND">
+                                                    <SelectItem Value="3.7">3.7</SelectItem>
+                                                    <SelectItem Value="4.0">4.0</SelectItem>
+                                                </SelectGroup>
+                                                <SelectGroup Label="NICHT BESTANDEN">
+                                                    <SelectItem Value="5.0">5.0</SelectItem>
+                                                </SelectGroup>
+                                            </Select>
+                                        </Column>
+                                        <Column ColumnSize="ColumnSize.Is3">
+                                            <CustomBadge @ref="@badges[currentStudentGrades.IndexOf(grade)]"/>
+                                        </Column>
+                                    </Row>
                                 }
-                            </TabPanel>
-                            <TabPanel Name="messages">
-                                Content for messages.
-                            </TabPanel>
-                            <TabPanel Name="settings">
-                                Content for settings.
-                            </TabPanel>
-                        </Content>
-                    </Tabs>
+                            }
+                        </div>
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            Test 2
+                        </div>
+                        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                            Test 3
+                        </div>
+                    </div>
+                    
                 </Column>
             </Row>
         </DetailRowTemplate>

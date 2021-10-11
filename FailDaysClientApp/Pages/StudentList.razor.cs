@@ -62,7 +62,9 @@ namespace FailDaysClientApp.Pages
         private async Task ShowBadgeAccordingToHttpResponse(HttpStatusCode statusCode, int index)
         {
             string message = httpMessageConverter.ConvertResponseCodeToMessage(statusCode);
-            if (statusCode == HttpStatusCode.OK)
+            //var test = new ToastMessage(message);
+            
+            if (statusCode == HttpStatusCode.OK) 
                 await badges[index].Success(message);
             else
                 await badges[index].Fail(message);
