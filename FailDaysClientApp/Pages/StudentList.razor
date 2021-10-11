@@ -1,5 +1,6 @@
 ﻿@page "/List"
 @using FailDaysClientApp.Models
+@using System.Diagnostics
 
 <Container Fluid="true">
     <DataGrid TItem="Student"
@@ -12,105 +13,78 @@
               DetailRowTrigger="@((item)=>item.MatNr == selectedStudent?.MatNr)"              
               Filterable="true">
         <DetailRowTemplate>
-            <Row>
-                <Column ColumnSize="ColumnSize.Is4">
-                    <Jumbotron Background="Background.Primary">
-                        <JumbotronTitle Size="JumbotronTitleSize.Is4">@selectedStudent.FirstName</JumbotronTitle>
-                        <JumbotronSubtitle>
-                            @selectedStudent.FirstName @selectedStudent.LastName (Matrikelnummer: @selectedStudent.MatNr)
-                        </JumbotronSubtitle>
-                        <Divider></Divider>
-                        <Paragraph>
-                            Durchschnittsnote: @selectedStudent.AverageGrade
-                        </Paragraph>
-                        <Paragraph>
-                            Projektthema: Leistungstracker (Link Projektübersicht)
-                        </Paragraph>
-                    </Jumbotron>
-                </Column>
-                <Column ColumnSize="ColumnSize.Is8">
-                    <nav>
-                      <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Home</a>
-                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</a>
-                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</a>
-                      </div>
-                    </nav>
-                    <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+            <nav>
+                
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="true">Profil</a>
+                    <a class="nav-item nav-link" id="nav-grades-tab" data-toggle="tab" href="#nav-grades" role="tab" aria-controls="nav-grades" aria-selected="false">Noten</a>
+                    <a class="nav-item nav-link" id="nav-projects-tab" data-toggle="tab" href="#nav-projects" role="tab" aria-controls="nav-projects" aria-selected="false">Projekte</a>
+                    <a class="nav-item nav-link" id="nav-participation-tab" data-toggle="tab" href="#nav-participation" role="tab" aria-controls="nav-participation" aria-selected="false">Mitarbeit</a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">@selectedStudent.FirstName</h5>
+                            <p class="card-text">@selectedStudent.FirstName @selectedStudent.LastName (@selectedStudent.MatNr)</p>
+                            <span class="badge badge-pill badge-primary" size="100px">Durchschnittsnote: @selectedStudent.AverageGrade</span>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <span class="badge badge-pill badge-secondary">Faildays übrig: 5</span>
+                            <span class="badge badge-pill badge-info">Teams: 3</span>
+                            <span class="badge badge-pill badge-primary">Aktive Mitarbeiten: 13</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="nav-grades" role="tabpanel" aria-labelledby="nav-grades-tab">
+                    <div class="card text-center">
+                        <div class="card-body">
                             @if (currentStudentGrades != null)
                             {
                                 foreach (Grade grade in currentStudentGrades)
                                 {
-                                    <Row @ref="rows[currentStudentGrades.IndexOf(grade)]" Margin="Margin.Is1.FromBottom">
-                                        <Column ColumnSize="ColumnSize.Is3">
-                                            @grade.Category
-                                        </Column>
-                                        <Column ColumnSize="ColumnSize.Is3">
-                                            <Select TValue="decimal"
-                                                    SelectedValue="@grade.Number"
-                                                    SelectedValueChanged="delegate(decimal d) { OnSelectedValueChanged(currentStudentGrades.IndexOf(grade), d); }"
-                                                    DecimalsSeparator="."
-                                                    Culture="en">
-                                                <SelectGroup Label="OHNE BEWERTUNG">
-                                                    <SelectItem Value="0.0">0.0</SelectItem>
-                                                </SelectGroup>
-                                                <SelectGroup Label="SEHR GUT">
-                                                    <SelectItem Value="1.0">1.0</SelectItem>
-                                                    <SelectItem Value="1.3">1.3</SelectItem>
-                                                </SelectGroup>
-                                                <SelectGroup Label="GUT">
-                                                    <SelectItem Value="1.7">1.7</SelectItem>
-                                                    <SelectItem Value="2.0">2.0</SelectItem>
-                                                    <SelectItem Value="2.3">2.3</SelectItem>
-                                                </SelectGroup>
-                                                <SelectGroup Label="BEFRIEDIGEND">
-                                                    <SelectItem Value="2.7">2.7</SelectItem>
-                                                    <SelectItem Value="3.0">3.0</SelectItem>
-                                                    <SelectItem Value="3.3">3.3</SelectItem>
-                                                </SelectGroup>
-                                                <SelectGroup Label="AUSREICHEND">
-                                                    <SelectItem Value="3.7">3.7</SelectItem>
-                                                    <SelectItem Value="4.0">4.0</SelectItem>
-                                                </SelectGroup>
-                                                <SelectGroup Label="NICHT BESTANDEN">
-                                                    <SelectItem Value="5.0">5.0</SelectItem>
-                                                </SelectGroup>
-                                            </Select>
-                                        </Column>
-                                        <Column ColumnSize="ColumnSize.Is3">
-                                            <CustomBadge @ref="@badges[currentStudentGrades.IndexOf(grade)]"/>
-                                        </Column>
+                                    <Row Margin="Margin.Is1.FromBottom">
+                                        <CustomDropdown CurrentGrade="@grade"
+                                                        OnValueChangedCallback="@(e => Callback(e.Value, currentStudentGrades.IndexOf(grade)))">
+                                            
+                                        </CustomDropdown>
                                     </Row>
                                 }
                             }
                         </div>
-                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                            Test 2
-                        </div>
-                        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                            Test 3
-                        </div>
                     </div>
-                    
-                </Column>
-            </Row>
+                </div>
+                <div class="tab-pane fade" id="nav-projects" role="tabpanel" aria-labelledby="nav-projects-tab">
+                    Test 3
+                </div>
+                <div class="tab-pane fade" id="nav-participation" role="tabpanel" aria-labelledby="nav-participation-tab">
+                    Test 3
+                </div>
+            </div>
         </DetailRowTemplate>
         <DataGridColumns>
-            <DataGridColumn TItem="Student" Field="@nameof(Student.MatNr)" Caption="Mat.nr." Sortable="true"/>
-            <DataGridColumn TItem="Student" Field="@nameof(Student.FirstName)" Caption="First Name" Editable="true"/>
-            <DataGridColumn TItem="Student" Field="@nameof(Student.LastName)" Caption="Last Name" Editable="true"/>
-            <DataGridColumn TItem="Student" Field="@nameof(Student.CourseId)" Caption="Course" Editable="true"/>
+            <DataGridColumn TItem="Student" Field="@nameof(Student.MatNr)" Caption="Matrikelnr." Sortable="true"/>
+            <DataGridColumn TItem="Student" Field="@nameof(Student.FirstName)" Caption="Vorname" Editable="true"/>
+            <DataGridColumn TItem="Student" Field="@nameof(Student.LastName)" Caption="Nachname" Editable="true"/>
+            <DataGridColumn TItem="Student" Field="@nameof(Student.CourseId)" Caption="Kurs" Editable="true"/>
         </DataGridColumns>
     </DataGrid>
 </Container>
 
 @code{
+
+    /*
     string selectedTab = "home";
 
     private void OnSelectedTabChanged(string name)
     {
         selectedTab = name;
-    }
+    }*/
+    
+    
+
+    
+
 }
 

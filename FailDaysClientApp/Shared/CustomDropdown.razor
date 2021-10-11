@@ -1,0 +1,66 @@
+﻿@using FailDaysClientApp.Models
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <select @ref="myselect" id="myselect" class="form-control"
+                    @onchange="selectedValue">
+                <option selected value="-1">@CurrentGrade.Category</option>
+                @foreach (var item in values)
+                {
+                    <option value="@item">@item</option>
+                }
+                @SelectedValue = @CurrentGrade.Number
+            </select>
+        </div>
+        <div class="col-sm">
+            @SelectedValue
+        </div>
+        <div class="col-sm">
+            <CustomBadge @ref="@AttachedBage"/>
+        </div>
+    </div>
+</div>
+
+
+
+ 
+
+@code{
+
+    [Inject]
+    IJSRuntime JSRuntime { get; set; }
+
+    private ElementReference myselect;
+    
+    [ParameterAttribute]
+    public CustomBadge AttachedBage { get; set; }
+
+    [ParameterAttribute]
+    public Grade CurrentGrade { get; set; }
+    private List<decimal> values = new(){ 1.0m, 1.3m, 1.7m, 2.0m, 2.3m, 2.7m, 3.0m, 3.3m, 3.7m, 4.0m };
+
+    public string SelectedValue = "";
+
+    public void AddBadge(List<CustomBadge> badges)
+    {
+        badges.Add(AttachedBage);
+    }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> OnValueChangedCallback{ get; set; }
+
+    public void selectedValue(ChangeEventArgs args)
+    {
+        OnValueChangedCallback.InvokeAsync(args);
+        
+        SelectedValue = args.Value.ToString();
+        //var item = CurrentGrade(item => item.Id == Convert.ToInt32(SelectedValue));
+        //items.Remove(item);
+
+        JSRuntime.InvokeVoidAsync("exampleJsFunctions.selectElement", myselect);
+    }
+
+    
+
+}

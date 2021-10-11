@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,17 +23,27 @@ namespace FailDaysClientApp.Pages
         List<Grade> currentStudentGrades = new();
         int totalStudents;
         Select<double> selectRef;
-        List<CustomBadge> badges = new();
-        List<Row> rows = new();
+        //List<CustomBadge> badges = new();
+        //List<Row> rows = new();
         [Inject] private HttpClient httpClient { get; set; }
         [Inject] private HttpResponseController httpMessageConverter { get; set; }
         [Inject] private GradeCalculationController gradeCalculator { get; set; }
     
-        async Task OnReadData(DataGridReadDataEventArgs<Student> e)
+        private void Callback(object args, int index)
         {
-            HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/student");
-            students = await response.Content.ReadFromJsonAsync<Student[]>();
+            decimal value = ConvertCultureSpecific((string)args);
+            currentStudentGrades[index].Number = ConvertBaseTen(value);
+            var uri = $"https://localhost:5001/api/grade/{currentStudentGrades[index].Id}";
+            HttpResponseMessage responseGrades = httpClient.PutAsJsonAsync(uri, currentStudentGrades[index]).Result;
+            ShowBadgeAccordingToHttpResponse(responseGrades.StatusCode, index);
             StateHasChanged();
+        }
+
+        private decimal ConvertCultureSpecific(string input)
+        {
+            NumberFormatInfo numberFormatWithComma = new NumberFormatInfo();
+            numberFormatWithComma.NumberDecimalSeparator = ",";
+            return decimal.Parse(input, numberFormatWithComma);
         }
 
         async Task Start()
@@ -38,7 +51,6 @@ namespace FailDaysClientApp.Pages
             HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/student");
             students = await response.Content.ReadFromJsonAsync<Student[]>();
             StateHasChanged();
-            
         }
         
         protected override void OnAfterRender(bool firstRender)
@@ -51,10 +63,9 @@ namespace FailDaysClientApp.Pages
     
         async Task OnSelectedValueChanged(int index, decimal value)
         {
-            currentStudentGrades[index].Number = Convert(value);
+            currentStudentGrades[index].Number = ConvertBaseTen(value);
             var uri = $"https://localhost:5001/api/grade/{currentStudentGrades[index].Id}";
             HttpResponseMessage responseGrades = await httpClient.PutAsJsonAsync(uri, currentStudentGrades[index]);
-            selectedStudent.AverageGrade = gradeCalculator.CalculateAverageGrade(currentStudentGrades);
             ShowBadgeAccordingToHttpResponse(responseGrades.StatusCode, index);
             StateHasChanged();
         }
@@ -65,26 +76,30 @@ namespace FailDaysClientApp.Pages
             //var test = new ToastMessage(message);
             
             if (statusCode == HttpStatusCode.OK) 
-                await badges[index].Success(message);
+                await dropdowns[index].AttachedBage.Success(message);
             else
-                await badges[index].Fail(message);
+                await dropdowns[index].AttachedBage.Fail(message);
             //StateHasChanged();
         }
-    
+
+        private List<CustomDropdown> dropdowns = new();
         private void CreateLists()
         {
-            rows.Clear();
-            badges.Clear();
+            //rows.Clear();
+            //badges.Clear();
+            dropdowns.Clear();
             
             foreach (var grade in currentStudentGrades)
             {
-                rows.Add(new Row());
-                CustomBadge badge = new CustomBadge();
-                badges.Add(badge);
+                var dropdown = new CustomDropdown();
+                dropdowns.Add(dropdown);
+                //rows.Add(new Row());
+                //CustomBadge badge = new CustomBadge();
+                //badges.Add(badge);
             }
         }
         
-        private decimal Convert(decimal dec)
+        private decimal ConvertBaseTen(decimal dec)
         {
             if (dec <= 5) 
                 return dec;

@@ -5,18 +5,6 @@ html, body {
     
 }
 
-.nextbutton:focus
-{
-    display: inline-block;
-    border: none;
-    width: 52px;
-    height: 64px;
-    background-color: transparent;
-    transform: scale(0.75);
-    transform-origin: left;
-    outline: none;
-}
-
 a, .btn-link {
     color: #0366d6;
 }

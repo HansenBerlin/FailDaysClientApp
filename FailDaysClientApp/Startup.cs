@@ -20,6 +20,7 @@ using Blazorise.Icons.Material;
 using Blazorise.Material;
 using FailDaysClientApp.Controller;
 using FailDaysClientApp.Shared;
+using Microsoft.JSInterop;
 
 namespace FailDaysClientApp
 {
